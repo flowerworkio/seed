@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+describe() {
+  echo "--- $1…"
+}
+
+buildpacks_package() {
+  describe "Packing seed via buildpacks"
+  local shortsha=$(git rev-parse --short HEAD)
+  local longsha=$(git rev-parse HEAD)
+  pack build flowerworkio/seed \
+    --path . \
+    --builder paketobuildpacks/builder:base
+  docker tag flowerworkio/seed flowerworkio/seed:${longsha}
+  docker tag flowerworkio/seed flowerworkio/seed:${shortsha}
+}
+
+buildpacks_publish() {
+  describe "Publishing seed"
+  local shortsha=$(git rev-parse --short HEAD)
+  local longsha=$(git rev-parse HEAD)
+  docker push flowerworkio/seed
+  docker push flowerworkio/seed:${longsha}
+  docker push flowerworkio/seed:${shortsha}
+}
+
+buildpacks_package
+buildpacks_publish
