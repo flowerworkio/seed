@@ -18,7 +18,7 @@ buildpacks_package() {
 }
 
 buildpacks_publish() {
-  describe "Publishing seed"
+  describe "Publishing :flowerwork: seed "
   local shortsha=$(git rev-parse --short HEAD)
   local longsha=$(git rev-parse HEAD)
   docker push flowerworkio/seed
